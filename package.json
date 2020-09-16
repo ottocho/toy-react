@@ -1,0 +1,15 @@
+{
+  "name": "toy-react",
+  "version": "0.0.1",
+  "main": "main.js",
+  "repository": "https://github.com/ottocho/toy-react",
+  "author": "Zhenjie Zhuo <otto.cho@gmail.com>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
