@@ -20,7 +20,12 @@ module.exports = {
       }
     ]
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Toy React Testing',
+      template: 'src/index.html'
+    })
+  ],
   mode: 'development',
   optimization: {
     minimize: false

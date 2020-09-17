@@ -24,8 +24,15 @@ class Component {
   }
 
   rerender() {
-    this._range.deleteContents();
-    this[RENDER_TO_DOM](this._range);
+    let oldRange = this._range;
+
+    let range = document.createRange();
+    range.setStart(oldRange.startContainer, oldRange.startOffset);
+    range.setEnd(oldRange.startContainer, oldRange.startOffset);
+    this[RENDER_TO_DOM](range);
+
+    oldRange.setStart(range.endContainer, range.endOffset);
+    oldRange.deleteContents();
   }
 
 
@@ -59,7 +66,11 @@ class ElementWrapper {
       const n = RegExp.$1.replace(/^[\s\S]/, c => c.toLowerCase());
       this.root.addEventListener(n, value);
     } else {
-      this.root.setAttribute(name, value);
+      if (name === "className") {
+        this.root.setAttribute("class", value);
+      } else {
+        this.root.setAttribute(name, value);
+      }
     }
   }
 
@@ -109,6 +120,9 @@ const createElement = (component, props, ...children) => {
       }
       if (typeof child === "number") {
         child = new TextWrapper(child.toString());
+      }
+      if (child === null) {
+        continue;
       }
       if (typeof child === "object" && child instanceof Array) {
         insertChildren(child);
