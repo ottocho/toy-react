@@ -4,6 +4,7 @@ class Component {
     this.props = Object.create(null);
     this.children = [];
     this._root = null;
+    this.state = {};
   }
 
   setAttribute(name, value) {
@@ -66,6 +67,9 @@ const createElement = (component, props, ...children) => {
     for (let child of children) {
       if (typeof child === "string") {
         child = new TextWrapper(child);
+      }
+      if (typeof child === "number") {
+        child = new TextWrapper(child.toString());
       }
       if (typeof child === "object" && child instanceof Array) {
         insertChildren(child);

@@ -1,22 +1,34 @@
 import {createElement, render, Component} from './toy-react';
 
 class MyComponent extends Component {
+  constructor() {
+    super();
+    this.state = {
+      name: "no name",
+      age: 88
+    };
+  }
+
   render() {
     return (
       <div>
         <h1>MyComponent</h1>
+        <p>name: {this.state.name}</p>
+        <p>age: {this.state.age}</p>
         {this.children}
       </div>
     );
   }
 }
 
-const k = "happy"
+const k = "happy";
 
 render(
   <MyComponent>
     <div id="a" class={k}>
-      <div></div>
+      <div>
+        <h3>wow</h3>
+      </div>
       <span>hello</span>
       <span>world</span>
     </div>
