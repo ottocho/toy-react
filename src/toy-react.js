@@ -1,4 +1,6 @@
 
+const RENDER_TO_DOM = Symbol("render to dom");
+
 class Component {
   constructor () {
     this.props = Object.create(null);
@@ -15,11 +17,8 @@ class Component {
     this.children.push(child);
   }
 
-  get root() {
-    if (!this._root) {
-      this._root = this.render().root;
-    }
-    return this._root;
+  [RENDER_TO_DOM](range) {
+    this.render()[RENDER_TO_DOM](range);
   }
 }
 
@@ -33,7 +32,15 @@ class ElementWrapper {
   }
 
   appendChild(child) {
-    this.root.appendChild(child.root);
+    let range = document.createRange();
+    range.setStart(this.root, this.root.childNodes.length);
+    range.setEnd(this.root, this.root.childNodes.length);
+    child[RENDER_TO_DOM](range);
+  }
+
+  [RENDER_TO_DOM](range) {
+    range.deleteContents();
+    range.insertNode(this.root);
   }
 }
 
@@ -41,10 +48,18 @@ class TextWrapper {
   constructor (content) {
     this.root = document.createTextNode(content);
   }
+  [RENDER_TO_DOM](range) {
+    range.deleteContents();
+    range.insertNode(this.root);
+  }
 }
 
 const render = (component, parentComponent) => {
-  parentComponent.appendChild(component.root);
+  let range = document.createRange();
+  range.setStart(parentComponent, 0);
+  range.setEnd(parentComponent, parentComponent.childNodes.length);
+  range.deleteContents();
+  component[RENDER_TO_DOM](range);
 };
 
 const createElement = (component, props, ...children) => {
