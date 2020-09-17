@@ -1,3 +1,5 @@
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
   entry: {
     main: './src/main.js'
@@ -11,13 +13,14 @@ module.exports = {
           options: {
             presets: ['@babel/preset-env'],
             "plugins": [
-              ["transform-react-jsx", {"pragma": "createElement"}]
+              ["@babel/transform-react-jsx", {"pragma": "createElement"}]
             ]
           }
         }
       }
     ]
   },
+  plugins: [new HtmlWebpackPlugin()],
   mode: 'development',
   optimization: {
     minimize: false

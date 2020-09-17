@@ -1,5 +1,25 @@
+import {createElement, render, Component} from './toy-react';
 
-for(let i of [1,2,3]){
-  console.log(i)
+class MyComponent extends Component {
+  render() {
+    return (
+      <div>
+        <h1>MyComponent</h1>
+        {this.children}
+      </div>
+    );
+  }
 }
-const d = <div></div>
+
+const k = "happy"
+
+render(
+  <MyComponent>
+    <div id="a" class={k}>
+      <div></div>
+      <span>hello</span>
+      <span>world</span>
+    </div>
+  </MyComponent>
+  , document.body
+);
