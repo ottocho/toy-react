@@ -13,6 +13,7 @@ class MyComponent extends Component {
     return (
       <div>
         <h1>MyComponent</h1>
+        <button onclick={() => { this.setState({ age: this.state.age + 1})}} >add</button>
         <p>name: {this.state.name}</p>
         <p>age: {this.state.age}</p>
         {this.children}

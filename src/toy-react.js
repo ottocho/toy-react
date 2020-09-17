@@ -6,6 +6,7 @@ class Component {
     this.props = Object.create(null);
     this.children = [];
     this._root = null;
+    this._range = null;
     this.state = {};
   }
 
@@ -18,7 +19,33 @@ class Component {
   }
 
   [RENDER_TO_DOM](range) {
+    this._range = range;
     this.render()[RENDER_TO_DOM](range);
+  }
+
+  rerender() {
+    this._range.deleteContents();
+    this[RENDER_TO_DOM](this._range);
+  }
+
+
+  setState(newState) {
+    if (this.state === null || typeof this.state !== "object") {
+      this.state = newState;
+      this.rerender();
+      return;
+    }
+    let merge = (oldState, newState) => {
+      for (let p in newState) {
+        if (oldState[p] === null || typeof oldState[p] !== "object") {
+          oldState[p] = newState[p];
+        } else {
+          merge(oldState[p], newState[p]);
+        }
+      }
+    }
+    merge(this.state, newState);
+    this.rerender();
   }
 }
 
@@ -28,7 +55,12 @@ class ElementWrapper {
   }
 
   setAttribute(name, value) {
-    this.root.setAttribute(name, value);
+    if (name.match(/^on([\s\S]+)$/)) {
+      const n = RegExp.$1.replace(/^[\s\S]/, c => c.toLowerCase());
+      this.root.addEventListener(n, value);
+    } else {
+      this.root.setAttribute(name, value);
+    }
   }
 
   appendChild(child) {
@@ -53,14 +85,6 @@ class TextWrapper {
     range.insertNode(this.root);
   }
 }
-
-const render = (component, parentComponent) => {
-  let range = document.createRange();
-  range.setStart(parentComponent, 0);
-  range.setEnd(parentComponent, parentComponent.childNodes.length);
-  range.deleteContents();
-  component[RENDER_TO_DOM](range);
-};
 
 const createElement = (component, props, ...children) => {
   let e;
@@ -95,6 +119,14 @@ const createElement = (component, props, ...children) => {
   }
   insertChildren(children);
   return e;
+};
+
+const render = (component, parentComponent) => {
+  let range = document.createRange();
+  range.setStart(parentComponent, 0);
+  range.setEnd(parentComponent, parentComponent.childNodes.length);
+  range.deleteContents();
+  component[RENDER_TO_DOM](range);
 };
 
 export {createElement, render, Component};
